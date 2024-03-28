@@ -1,0 +1,12 @@
+*.html
+node_modules
+web/*
+wallpapers
+scripts
+
+web-thumbnails/anime
+web-thumbnails/light
+web-thumbnails/minimalistic
+web-thumbnails/mix
+web-thumbnails/pixelart
+web-thumbnails/videogame-3d-art
