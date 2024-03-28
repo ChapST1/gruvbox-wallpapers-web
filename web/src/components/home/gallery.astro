@@ -1,0 +1,46 @@
+---
+import type { Wallpaper as WallpaperType } from "src/types";
+import Grid from "@components/ui/grid.astro";
+import Wallpaper from "@components/ui/wallpaper.astro";
+import Arrow from "@components/icons/arrow.astro";
+
+interface Props {
+  wallpaper: WallpaperType;
+}
+const IMAGES_FOR_PREVIEW = 10;
+
+const {
+  wallpaper: { category, data },
+} = Astro.props;
+
+const totalResults = data.length;
+---
+
+<section>
+  <header
+    class="sticky top-16 left-0 p-2 bg-bg/95 dark:bg-bg-dark/95 justify-between md:backdrop-blur-md flex items-center z-10 text-sm md:text-base"
+  >
+    <h2
+      class="font-bold text-xl md:text-2xl capitalize text-primary-dark dark:text-primary"
+    >
+      {category}
+    </h2>
+    {
+      totalResults > IMAGES_FOR_PREVIEW && (
+        <a
+          href={`/wallpapers/${category}`}
+          class="flex duration-300  text-color-text dark:text-color-text-dark dark:hover:text-primary hover:text-primary-dark  text-base font-semibold  md:text-xl items-center justify-center gap-1 group"
+        >
+          show more
+          <Arrow class="size-4" />
+        </a>
+      )
+    }
+  </header>
+
+  <div id="#my-gallery">
+    <Grid class="px-2">
+      {data.slice(0, IMAGES_FOR_PREVIEW).map((item) => <Wallpaper {...item} />)}
+    </Grid>
+  </div>
+</section>

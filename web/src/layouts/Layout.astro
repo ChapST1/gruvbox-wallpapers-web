@@ -1,0 +1,117 @@
+---
+import "@fontsource-variable/nunito";
+
+import Footer from "@components/global/footer.astro";
+import NavBar from "@components/global/nav-bar.astro";
+import { ViewTransitions } from "astro:transitions";
+import "photoswipe/style.css";
+import Shadow from "@components/global/shadow.astro";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<ViewTransitions />
+	</head>
+	<body class="overflow-x-hidden">
+		<NavBar />
+		<slot />
+		<Footer />
+		<Shadow />
+
+		<script>
+			import PhotoSwipe from "photoswipe";
+			import PhotoSwipeLightbox from "photoswipe/lightbox";
+			import "photoswipe/style.css";
+
+			document.addEventListener("astro:page-load", () => {
+				const lightbox = new PhotoSwipeLightbox({
+					gallery: "#my-gallery",
+					children: "#wallpaper-item",
+					pswpModule: PhotoSwipe,
+					arrowNext: true,
+					arrowPrev: true,
+					loop: false,
+				});
+
+				/**
+				 * Download button
+				 * docs -> https://photoswipe.com/adding-ui-elements/#adding-download-button
+				 */
+
+				lightbox.on("uiRegister", function () {
+					//@ts-ignore
+					lightbox.pswp.ui.registerElement({
+						name: "download-button",
+						order: 8,
+						isButton: true,
+						tagName: "a",
+
+						// SVG with outline
+						html: {
+							isCustomSVG: true,
+							inner:
+								'<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" id="pswp__icn-download"/>',
+							outlineID: "pswp__icn-download",
+						},
+
+						onInit: (el, pswp) => {
+							el.setAttribute("download", "");
+							el.setAttribute("target", "_blank");
+							el.setAttribute("rel", "noopener");
+
+							pswp.on("change", () => {
+								//@ts-ignore
+								el.href = pswp.currSlide.data.src;
+							});
+						},
+					});
+				});
+
+				lightbox.init();
+			});
+		</script>
+
+		<style is:global>
+			/* Firefox */
+			:root {
+				--bg: #fbf1c7;
+				--bg-dark: #1d2021;
+				--primary-color: #eadbad;
+				--red: #cc241d;
+				--green: #98971a;
+				--yellow: #d79921;
+				--blue: #458588;
+				--purple: #b16286;
+				--aqua: #689d6a;
+				--orange: #d65d0e;
+
+				--border: #d3c9a1;
+				--border-dark: #3c3836;
+			}
+			* {
+				font-family: "Nunito Variable", sans-serif;
+			}
+
+			html {
+				scrollbar-width: thin;
+				scrollbar-color: var(--primary-color) transparent;
+				scroll-behavior: smooth;
+
+				@apply bg-bg dark:bg-bg-dark;
+			}
+		</style>
+	</body>
+</html>

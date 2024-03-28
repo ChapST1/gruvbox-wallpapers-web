@@ -1,0 +1,62 @@
+---
+import type { WallpaperImages } from "src/types";
+
+interface Props extends WallpaperImages {}
+
+const { full, fullHeight, fullWidth, thumb } = Astro.props;
+---
+
+<a
+  href={full}
+  class="h-52 w-full rounded-md overflow-hidden p-2 duration-300 group"
+  id="wallpaper-item"
+  data-cropped="true"
+  data-pswp-width={fullWidth}
+  data-pswp-height={fullHeight}
+>
+  <picture class="w-full h-full overflow-hidden block">
+    <img
+      src={thumb}
+      alt="wallpaper"
+      class="w-full group-hover:scale-110 h-full duration-300 object-cover"
+    />
+  </picture>
+</a>
+
+<style scoped>
+  a {
+    view-timeline-name: --image;
+    view-timeline-axis: block;
+
+    animation-timeline: --image;
+    animation-name: show;
+
+    animation-range: entry 0% cover 50%;
+    animation-fill-mode: both;
+
+    border-image-source: linear-gradient(
+      var(--border),
+      transparent,
+      var(--border)
+    );
+    border-image-slice: 1 1 1 1;
+    border-image-width: 2px;
+  }
+
+  html.dark a {
+    border-image-source: linear-gradient(
+      var(--border-dark),
+      transparent,
+      var(--border-dark)
+    );
+  }
+
+  @keyframes move {
+    from {
+      --a: 0deg;
+    }
+    to {
+      --a: 360deg;
+    }
+  }
+</style>

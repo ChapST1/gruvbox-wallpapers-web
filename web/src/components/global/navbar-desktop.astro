@@ -1,0 +1,67 @@
+---
+import { handleCategoryActive } from "@lib/utils/handle-category-active";
+import { getCategories } from "@services/get-categories";
+import DarkMode from "./dark-mode.astro";
+
+interface Props {
+  category: string;
+}
+const { category } = Astro.props;
+
+const categories = getCategories();
+---
+
+<ul class="gap-1 capitalize hidden md:flex md:justify-end grow" id="nav-bar">
+  <!-- Effect -->
+  <span
+    id="effect"
+    class="absolute rounded-md bg-bg-accent dark:bg-bg-accent-dark w-[var(--width)] h-[var(--height)] top-[var(--top)] left-[var(--left)] duration-300 ease-in-out -z- opacity-[var(--opacity)] scale-[var(--scale)]"
+  ></span>
+  <!-- Effect -->
+
+  {
+    categories?.map(({ href, name }) => {
+      const styles = handleCategoryActive(`${category}`, name);
+
+      return (
+        <li>
+          <a
+            id="link"
+            href={href}
+            class={`py-2 px-3 rounded-md md:text-lg text-base text-color-text dark:text-color-text-dark font-semibold ${styles} relative z-10 duration-300`}
+          >
+            {name}
+          </a>
+        </li>
+      );
+    })
+  }
+
+  <DarkMode />
+</ul>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const $links = document.querySelectorAll("#link");
+    const $effect = document.getElementById("effect");
+
+    $links.forEach((item) => {
+      item.addEventListener("mouseenter", () => {
+        const { y, x, height, width } = item.getBoundingClientRect();
+
+        $effect?.style.setProperty("--opacity", `1`);
+        $effect?.style.setProperty("--scale", "1");
+
+        $effect?.style.setProperty("--width", `${width}px`);
+        $effect?.style.setProperty("--height", `${height}px`);
+        $effect?.style.setProperty("--top", `${y}px`);
+        $effect?.style.setProperty("--left", `${x}px`);
+      });
+
+      item.addEventListener("mouseleave", () => {
+        $effect?.style.setProperty("--opacity", "0");
+        $effect?.style.setProperty("--scale", "0.8");
+      });
+    });
+  });
+</script>

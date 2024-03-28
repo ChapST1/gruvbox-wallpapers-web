@@ -1,0 +1,13 @@
+---
+import { getAllWallpapers } from "@services/get-all-wallpapers";
+import Layout from "../layouts/Layout.astro";
+import Gallery from "@components/home/gallery.astro";
+
+const wallpapers = getAllWallpapers();
+---
+
+<Layout title="Gruvbox wallpapers">
+	<main>
+		{wallpapers.map((item) => <Gallery wallpaper={item} />)}
+	</main>
+</Layout>

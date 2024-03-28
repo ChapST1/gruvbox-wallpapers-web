@@ -1,0 +1,32 @@
+---
+import { getCategories } from "@services/get-categories";
+import { getWallpapers } from "@services/get-wallpapers";
+import Grid from "@components/ui/grid.astro";
+import Layout from "../../layouts/Layout.astro";
+import type { GetStaticPaths } from "astro";
+import Wallpaper from "@components/ui/wallpaper.astro";
+
+export const getStaticPaths = (() => {
+  const categories = getCategories();
+  return categories.map(({ name }) => ({ params: { category: name } }));
+}) satisfies GetStaticPaths;
+
+const { category } = Astro.params;
+
+const info = getWallpapers({
+  category: `${category}`,
+});
+---
+
+<Layout title={`wallpapers - ${category}`}>
+  <main class="h-full min-h-dvh px-2">
+    <h2
+      class="text-color-text py-3 md:py-4 text-xl md:text-2xl sticky top-16 bg-bg/95 dark:bg-bg-dark/95 z-30 capitalize md:backdrop-blur-md text-center dark:text-color-text-dark"
+    >
+      Wallpapers <span class="font-bold">{category}</span>
+    </h2>
+    <Grid>
+      {info?.data.map((item) => <Wallpaper {...item} />)}
+    </Grid>
+  </main>
+</Layout>

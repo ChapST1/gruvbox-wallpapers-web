@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { twMerge } from "tailwind-merge";
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const props = Astro.props;
+---
+
+<div
+  class={twMerge(
+    "fixed w-full z-[10] bottom-0 left-0 h-28 pointer-events-none opacity-100",
+    props.class,
+  )}
+>
+</div>
+
+<style>
+  html.dark div {
+    background-image: linear-gradient(
+      to top,
+      var(--bg-dark),
+      30%,
+      transparent,
+      rgba(0, 0, 255, 0)
+    );
+  }
+
+  div {
+    background-image: linear-gradient(
+      to top,
+      var(--bg),
+      30%,
+      transparent,
+      rgba(0, 0, 255, 0)
+    );
+  }
+</style>
