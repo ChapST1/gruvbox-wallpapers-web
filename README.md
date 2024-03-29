@@ -1,6 +1,6 @@
 # GRUVBOX WALLPAPERS WEB
 
-#### images from the repository https://github.com/AngelJumbo/gruvbox-wallpapers
+#### images from https://github.com/AngelJumbo/gruvbox-wallpapers
 
 ![design 1](/web/screenshots/light.png) ![design 1](/web/screenshots/dark.png) ![design 1](/web/screenshots/dark-2.png)
 
