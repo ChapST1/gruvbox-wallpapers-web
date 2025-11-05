@@ -9,7 +9,7 @@ export async function getWallpapers({
 }: {
   category?: string;
   limit?: number;
-}): Promise<Wallpaper[]> {
+}): Promise<Wallpaper[]>  {
   try {
     const categories = await getCategories();
     const findCategory = categories.find(
@@ -44,6 +44,6 @@ export async function getWallpapers({
 
     return images;
   } catch (error) {
-    return error;
+    console.error("Error fetching wallpapers:", error);
   }
 }
