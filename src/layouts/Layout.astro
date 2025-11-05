@@ -3,9 +3,7 @@ import "@fontsource-variable/nunito";
 
 import Footer from "@components/global/footer.astro";
 import NavBar from "@components/global/nav-bar.astro";
-import { ViewTransitions } from "astro:transitions";
-import "photoswipe/style.css";
-import Shadow from "@components/global/shadow.astro";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
     title: string;
@@ -50,7 +48,7 @@ const { title, description } = Astro.props;
 
         <!-- Meta Tags Generated via https://www.opengraph.xyz -->
         <title>{title}</title>
-        <ViewTransitions />
+        <ClientRouter />
     </head>
     <body class="overflow-x-hidden mt-16">
         <NavBar />
