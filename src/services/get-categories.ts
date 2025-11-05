@@ -16,7 +16,7 @@ export interface APIResponse {
   }[];
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories() {
   const categories = await fetch(CATEGORIES_API_URL, {
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`,

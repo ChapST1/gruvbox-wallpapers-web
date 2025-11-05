@@ -9,9 +9,10 @@ export async function getWallpapers({
 }: {
   category?: string;
   limit?: number;
-}): Promise<Wallpaper[]>  {
+}) {
   try {
     const categories = await getCategories();
+    
     const findCategory = categories.find(
       (i) => i.name.toLowerCase() === category?.toLowerCase(),
     );
