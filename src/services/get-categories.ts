@@ -1,7 +1,8 @@
-import data from "../../public/data.json";
-import { HOME_KEY_CATEGORIES } from "@lib/constants"; // "Home"
+import { GITHUB_TOKEN, } from "@lib/constants"; // "Home"
 import { CATEGORIES_API_URL } from "./config";
 import type { Category } from "src/types";
+
+
 
 export interface APIResponse {
   sha: string;
@@ -18,7 +19,7 @@ export interface APIResponse {
 export async function getCategories(): Promise<Category[]> {
   const categories = await fetch(CATEGORIES_API_URL, {
     headers: {
-      Authorization: `token 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`,
+      Authorization: `token ${GITHUB_TOKEN}`,
     },
   });
   const res = (await categories.json()) as APIResponse;
