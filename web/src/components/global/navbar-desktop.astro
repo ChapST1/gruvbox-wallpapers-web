@@ -1,67 +1,135 @@
 ---
-import { handleCategoryActive } from "@lib/utils/handle-category-active";
 import { getCategories } from "@services/get-categories";
 import DarkMode from "./dark-mode.astro";
-
-interface Props {
-  category: string;
-}
-const { category } = Astro.props;
-
-const categories = getCategories();
+import FullScreen from "./full-screen.astro";
+const categories = await getCategories();
 ---
 
-<ul class="gap-1 capitalize hidden md:flex md:justify-end grow" id="nav-bar">
-  <!-- Effect -->
-  <span
-    id="effect"
-    class="absolute rounded-md bg-bg-accent dark:bg-bg-accent-dark w-[var(--width)] h-[var(--height)] top-[var(--top)] left-[var(--left)] duration-300 ease-in-out -z- opacity-[var(--opacity)] scale-[var(--scale)]"
-  ></span>
-  <!-- Effect -->
+<nav
+    class="navbar-overlay w-full h-dvh bg-bg-dark/90 md:backdrop-blur-sm fixed top-0 left-0 z-50"
+    data-status="close"
+>
+    <div
+        class="navbar-container duration-300 overflow-y-auto border-r-2 md:border border-bg-accent dark:border-border-dark/80 bg-bg-dark px-3 py-3 md:rounded-md fixed left-0 top-[50%] translate-y-[-50%] z-50 w-[300px]"
+    >
+        <h2 class="text-color-text-dark text-xl mb-4">Categories</h2>
+        <ul class="flex flex-col gap-3">
+            {
+                categories?.map(({ href, name }) => {
+                    return (
+                        <li class="">
+                            <a
+                                id="link"
+                                href={href}
+                                class="link py-2 flex group items-center dark:hover:text-primary justify-between px-3 rounded-md md:text-lg text-base text-color-text dark:text-color-text-dark font-semibold hover:text-primary hover:bg-bg-dark/50 dark:hover:bg-bg-accent-dark relative z-10 duration-200"
+                            >
+                                {name}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="25"
+                                    height="25"
+                                    viewBox="0 0 24 24"
+                                    class="group-hover:opacity-100 opacity-0 group-hover:translate-x-0 -translate-x-2 duration-100"
+                                >
+                                    <path
+                                        fill="currentColor"
+                                        d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6z"
+                                    />
+                                </svg>
+                            </a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
+    </div>
+</nav>
 
-  {
-    categories?.map(({ href, name }) => {
-      const styles = handleCategoryActive(`${category}`, name);
+<div
+    class="controls-container h-10 md:h-auto flex items-center justify-between gap-2"
+>
+    <button title="categories" class="navbar-trigger z-40">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 text-primary dark:text-color-text"
+            viewBox="0 0 24 24"
+            ><path
+                fill="currentColor"
+                d="M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z"></path></svg
+        >
+    </button>
+    <FullScreen />
+    <DarkMode />
+</div>
+<style scoped>
+    nav {
+        transition: 0.3s;
+        @apply bg-bg/80 dark:bg-bg-dark/90;
+        pointer-events: auto;
+    }
+    nav div {
+        @apply bg-bg h-full md:h-[95%] dark:bg-bg-dark md:border border-bg-accent dark:border-border-dark;
+    }
 
-      return (
-        <li>
-          <a
-            id="link"
-            href={href}
-            class={`py-2 px-3 rounded-md md:text-lg text-base text-color-text dark:text-color-text-dark font-semibold ${styles} relative z-10 duration-300`}
-          >
-            {name}
-          </a>
-        </li>
-      );
-    })
-  }
+    nav[data-status="open"] {
+        opacity: 1;
+        visibility: visible;
+    }
 
-  <DarkMode />
-</ul>
+    nav[data-status="close"] {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    nav[data-status="close"] div {
+        left: -5%;
+    }
+    nav[data-status="open"] div {
+        @apply left-0 md:left-[20px];
+    }
+
+    .controls-container {
+        /*768*/
+        @apply border border-transparent;
+        animation: startNavigation forwards;
+        animation-timeline: scroll(root);
+        animation-range: entry 5% exit 20%;
+        pointer-events: auto;
+    }
+
+    nav a[data-status="active"] {
+        @apply bg-bg-dark/50 dark:bg-bg-accent-dark text-primary;
+    }
+</style>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
-    const $links = document.querySelectorAll("#link");
-    const $effect = document.getElementById("effect");
+    document.addEventListener("astro:page-load", () => {
+        handleActiveLink();
 
-    $links.forEach((item) => {
-      item.addEventListener("mouseenter", () => {
-        const { y, x, height, width } = item.getBoundingClientRect();
+        const navOverlay = document.querySelector(".navbar-overlay");
+        const navbarTrigger = document.querySelector(".navbar-trigger");
 
-        $effect?.style.setProperty("--opacity", `1`);
-        $effect?.style.setProperty("--scale", "1");
+        navbarTrigger?.addEventListener("click", () => {
+            navOverlay?.setAttribute("data-status", "open");
+        });
 
-        $effect?.style.setProperty("--width", `${width}px`);
-        $effect?.style.setProperty("--height", `${height}px`);
-        $effect?.style.setProperty("--top", `${y}px`);
-        $effect?.style.setProperty("--left", `${x}px`);
-      });
+        navOverlay?.addEventListener("click", (e) => {
+            if (navOverlay === e.target) {
+                navOverlay.setAttribute("data-status", "close");
+            }
+        });
 
-      item.addEventListener("mouseleave", () => {
-        $effect?.style.setProperty("--opacity", "0");
-        $effect?.style.setProperty("--scale", "0.8");
-      });
+        function handleActiveLink() {
+            const links = document.querySelectorAll(".link");
+            const [, pathname] = window.location.pathname
+                .split("/")
+                .filter((i) => Boolean(i));
+
+            links.forEach((i) => {
+                if (i.textContent?.trim() === pathname) {
+                    i.setAttribute("data-status", "active");
+                }
+            });
+        }
     });
-  });
 </script>

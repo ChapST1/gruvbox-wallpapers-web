@@ -1,0 +1,38 @@
+<main class="gap-4 bg-bg-dark h-dvh flex flex-col items-center justify-center">
+    <h2 class="font-bold uppercase">Page not found :(</h2>
+    <a
+        href="/"
+        class="text-primary text-2xl border border-bg-dark md:fixed md:right-2 md:top-2 hover:underline"
+        >Home</a
+    >
+</main>
+
+<style>
+    h2 {
+        @apply bg-red block text-center text-4xl md:text-8xl text-primary uppercase;
+        mask-image: linear-gradient(to bottom, #000, transparent);
+
+        font-weight: bold; /* Optional: for better visibility */
+
+        /* Apply the linear gradient as a background */
+        background:
+            linear-gradient(
+                to bottom,
+                theme("colors.primary") 10%,
+                transparent
+            ),
+            /* Example colors */
+                linear-gradient(
+                    to bottom,
+                    theme("colors.primary") 10%,
+                    transparent
+                );
+
+        /* Clip the background to the text shape */
+        -webkit-background-clip: text; /* For Webkit browsers (Chrome, Safari) */
+        background-clip: text;
+
+        /* Make the text transparent so the background shows through */
+        color: transparent;
+    }
+</style>

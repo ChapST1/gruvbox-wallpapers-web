@@ -1,15 +1,35 @@
 import data from "../../public/data.json";
 import { HOME_KEY_CATEGORIES } from "@lib/constants"; // "Home"
+import { CATEGORIES_API_URL } from "./config";
+import type { Category } from "src/types";
 
-export function getCategories() {
-	const categories = data.map(({ category }) => {
-		return {
-			name: category,
-			href: `/wallpapers/${category}`,
-		};
-	});
+export interface APIResponse {
+  sha: string;
+  url: string;
+  tree: {
+    path: string;
+    mode: string;
+    type: string;
+    sha: string;
+    url: string;
+  }[];
+}
 
-	const home = { name: HOME_KEY_CATEGORIES, href: "/" };
+export async function getCategories(): Promise<Category[]> {
+  const categories = await fetch(CATEGORIES_API_URL, {
+    headers: {
+      Authorization: `token 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`,
+    },
+  });
+  const res = (await categories.json()) as APIResponse;
 
-	return [home, ...categories];
+  const keys = res?.tree.map((i) => {
+    return {
+      name: i.path,
+      href: `/wallpapers/${i.path}`,
+      allImagesApiUrl: i.url,
+    };
+  });
+
+  return [...keys];
 }

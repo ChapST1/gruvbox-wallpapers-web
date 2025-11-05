@@ -1,13 +1,20 @@
 ---
-import { getAllWallpapers } from "@services/get-all-wallpapers";
 import Layout from "../layouts/Layout.astro";
 import Gallery from "@components/home/gallery.astro";
+import { getCategories } from "@services/get-categories";
 
-const wallpapers = getAllWallpapers();
+const categories = await getCategories();
 ---
 
-<Layout title="Gruvbox wallpapers">
-	<main>
-		{wallpapers.map((item) => <Gallery wallpaper={item} />)}
-	</main>
+<Layout
+    title="Gruvbox wallpapers"
+    description="Download the best HD and Ultra HD Wallpapers Gruvbox style. Use them as wallpapers for your desktop screens."
+>
+    <main class="">
+        {
+            categories.map((i) => {
+                return <Gallery category={i} />;
+            })
+        }
+    </main>
 </Layout>

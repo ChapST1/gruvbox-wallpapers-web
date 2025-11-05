@@ -3,37 +3,44 @@ import Moon from "@components/icons/moon.astro";
 import Sun from "@components/icons/sun.astro";
 ---
 
-<button id="btn-dark" class="size-7 overflow-hidden">
-  <span
-    class="h-[200%] duration-300 flex text-primary-dark dark:text-primary flex-col items-center justify-between dark:translate-y-[-50%] *:duration-300"
-  >
-    <Moon class={"block min-h-5 min-w-5 dark:opacity-0"} />
-    <Sun class={"block min-h-5 min-w-5 opacity-0 dark:opacity-100"} />
-  </span>
+<button id="btn-dark" class="md:size-7 size-[25px] visible overflow-hidden">
+    <span
+        class="h-[200%] duration-300 flex text-primary dark:text-color-text flex-col items-center justify-between dark:translate-y-[-50%] *:duration-300"
+    >
+        <Moon
+            class={"block md:min-h-6 md:min-w-6 min-h-5 min-w-5   dark:opacity-0"}
+        />
+        <Sun
+            class={"block md:min-h-6 md:min-w-6 min-h-5 min-w-5  opacity-0 dark:opacity-100"}
+        />
+    </span>
 </button>
 
 <script>
-  import { CURRENT_DARK_MODE_KEY } from "../../lib/constants/index";
+    import { CURRENT_DARK_MODE_KEY } from "../../lib/constants/index";
 
-  document.addEventListener("astro:page-load", () => {
-    const currentTheme = JSON.parse(
-      localStorage.getItem(CURRENT_DARK_MODE_KEY) as string,
-    );
+    document.addEventListener("astro:page-load", () => {
+        const currentTheme = JSON.parse(
+            localStorage.getItem(CURRENT_DARK_MODE_KEY) as string,
+        );
 
-    if (currentTheme) {
-      document.documentElement.classList.add("dark");
-    }
+        if (currentTheme) {
+            document.documentElement.classList.add("dark");
+        }
 
-    const btnDarkMode = document.querySelectorAll("#btn-dark");
+        const btnDarkMode = document.querySelectorAll("#btn-dark");
 
-    btnDarkMode.forEach((item) => {
-      item?.addEventListener("click", () => {
-        const html = document.documentElement;
-        const isActive = !html.classList.contains("dark");
+        btnDarkMode.forEach((item) => {
+            item?.addEventListener("click", () => {
+                const html = document.documentElement;
+                const isActive = !html.classList.contains("dark");
 
-        html.classList.toggle("dark");
-        localStorage.setItem(CURRENT_DARK_MODE_KEY, JSON.stringify(isActive));
-      });
+                html.classList.toggle("dark");
+                localStorage.setItem(
+                    CURRENT_DARK_MODE_KEY,
+                    JSON.stringify(isActive),
+                );
+            });
+        });
     });
-  });
 </script>

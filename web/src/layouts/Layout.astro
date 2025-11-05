@@ -8,110 +8,313 @@ import "photoswipe/style.css";
 import Shadow from "@components/global/shadow.astro";
 
 interface Props {
-	title: string;
+    title: string;
+    description: string;
 }
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<ViewTransitions />
-	</head>
-	<body class="overflow-x-hidden">
-		<NavBar />
-		<slot />
-		<Footer />
-		<Shadow />
+<html lang="en" class="max-w-screen-2xl mx-auto">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content={description} />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
 
-		<script>
-			import PhotoSwipe from "photoswipe";
-			import PhotoSwipeLightbox from "photoswipe/lightbox";
-			import "photoswipe/style.css";
+        <!-- Facebook Meta Tags -->
+        <meta
+            property="og:url"
+            content="https://gruvbox-wallpapers.vercel.app/"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Gruvbox wallpapers" />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content="/og-image.webp" />
 
-			document.addEventListener("astro:page-load", () => {
-				const lightbox = new PhotoSwipeLightbox({
-					gallery: "#my-gallery",
-					children: "#wallpaper-item",
-					pswpModule: PhotoSwipe,
-					arrowNext: true,
-					arrowPrev: true,
-					loop: false,
-				});
+        <!-- Twitter Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            property="twitter:domain"
+            content="gruvbox-wallpapers.vercel.app"
+        />
+        <meta
+            property="twitter:url"
+            content="https://gruvbox-wallpapers.vercel.app/"
+        />
+        <meta name="twitter:title" content="Gruvbox wallpapers" />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content="/og-image.webp" />
 
-				/**
-				 * Download button
-				 * docs -> https://photoswipe.com/adding-ui-elements/#adding-download-button
-				 */
+        <!-- Meta Tags Generated via https://www.opengraph.xyz -->
+        <title>{title}</title>
+        <ViewTransitions />
+    </head>
+    <body class="overflow-x-hidden mt-16">
+        <NavBar />
+        <slot />
+        <Footer />
 
-				lightbox.on("uiRegister", function () {
-					//@ts-ignore
-					lightbox.pswp.ui.registerElement({
-						name: "download-button",
-						order: 8,
-						isButton: true,
-						tagName: "a",
+        <style is:global>
+            /* Firefox */
+            :root {
+                --bg: #fbf1c7;
+                --bg-dark: #1d2021;
+                --primary-color: #eadbad;
+                --red: #cc241d;
+                --green: #98971a;
+                --yellow: #d79921;
+                --blue: #458588;
+                --purple: #b16286;
+                --aqua: #689d6a;
+                --orange: #d65d0e;
 
-						// SVG with outline
-						html: {
-							isCustomSVG: true,
-							inner:
-								'<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 16l6 6.1 6-6.1ZM23 23H9v2h14Z" id="pswp__icn-download"/>',
-							outlineID: "pswp__icn-download",
-						},
+                --border: #d3c9a1;
+                --border-dark: #3c3836;
+            }
+            * {
+                font-family: "Nunito Variable", sans-serif;
+            }
 
-						onInit: (el, pswp) => {
-							el.setAttribute("download", "");
-							el.setAttribute("target", "_blank");
-							el.setAttribute("rel", "noopener");
+            html {
+                scrollbar-width: thin;
+                scrollbar-color: var(--primary-color) transparent;
+                scroll-behavior: smooth;
+                @apply bg-bg dark:bg-bg-dark relative;
+            }
 
-							pswp.on("change", () => {
-								//@ts-ignore
-								el.href = pswp.currSlide.data.src;
-							});
-						},
-					});
-				});
+            html::after,
+            html::before {
+                content: "";
+                width: 100%;
+                height: 100px;
+                position: fixed;
+                z-index: 20;
+                pointer-events: none;
+                @apply bg-bg dark:bg-bg-dark opacity-10 dark:opacity-100;
+                left: 0;
+            }
 
-				lightbox.init();
-			});
-		</script>
+            html::after {
+                top: 0;
+                mask-image: linear-gradient(to top, #00000000, #000);
+                mask-repeat: no-repeat;
+            }
+            html::before {
+                mask-image: linear-gradient(to bottom, #00000000, #000);
+                mask-repeat: no-repeat;
+                bottom: 0;
+            }
+            html[data-scroll-status="stop"] {
+                overflow-y: hidden;
+            }
+            html[data-scroll-status="move"] {
+                overflow-y: scroll;
+            }
+            /*overlay, modal, thumb image*/
 
-		<style is:global>
-			/* Firefox */
-			:root {
-				--bg: #fbf1c7;
-				--bg-dark: #1d2021;
-				--primary-color: #eadbad;
-				--red: #cc241d;
-				--green: #98971a;
-				--yellow: #d79921;
-				--blue: #458588;
-				--purple: #b16286;
-				--aqua: #689d6a;
-				--orange: #d65d0e;
+            .modal-image-thumb,
+            .modal-image-large {
+                @apply w-full md:w-[95%];
+                height: auto;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                animation: fade-in 0.5s forwards;
+            }
+            .modal-image-thumb {
+                z-index: 500;
+            }
+            .modal-image-large {
+                z-index: 600;
+            }
 
-				--border: #d3c9a1;
-				--border-dark: #3c3836;
-			}
-			* {
-				font-family: "Nunito Variable", sans-serif;
-			}
+            .loader {
+                width: 28px;
+                height: 28px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                border: 2px solid #fff;
+                border-bottom-color: transparent;
+                border-radius: 50%;
+                box-sizing: border-box;
+                display: none;
+            }
 
-			html {
-				scrollbar-width: thin;
-				scrollbar-color: var(--primary-color) transparent;
-				scroll-behavior: smooth;
+            .loader[data-play="true"] {
+                display: inline-block;
+                animation: rotation 0.5s linear infinite;
+            }
 
-				@apply bg-bg dark:bg-bg-dark;
-			}
-		</style>
-	</body>
+            @keyframes rotation {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes startNavigation {
+                to {
+                    @apply bg-bg-dark/80 md:mt-3 backdrop-blur-md py-1 md:py-2 border-border-dark px-3 md:px-4 rounded-full;
+                }
+            }
+        </style>
+
+        <!-- modal lightbox -->
+        <section
+            class="modal opacity-0 duration-300 invisible w-full h-dvh bg-black/90 dark:bg-bg-dark/90 fixed top-0 left-0 z-50 md:backdrop-blur-sm"
+        >
+            <span class="loader"></span>
+        </section>
+
+        <script>
+            document.addEventListener("astro:page-load", () => {
+                const allWallpapers =
+                    document.querySelectorAll(".wallpaper-image");
+                const modalLightbox = document.querySelector(".modal");
+
+                allWallpapers.forEach((i) => {
+                    i.addEventListener("click", () => {
+                        handleScroll();
+                        activeModalLightbox();
+
+                        const image = createThumbImage(
+                            i as HTMLImageElement,
+                        ) as HTMLImageElement;
+
+                        loadFullImage(image);
+                    });
+                });
+
+                modalLightbox?.addEventListener("click", (e) => {
+                    if (modalLightbox === e.target) {
+                        disableModalLightbox();
+                        handleScroll();
+                    }
+                });
+
+                function handleScroll() {
+                    const html = document.documentElement;
+                    const scrollStatus =
+                        html.getAttribute("data-scroll-status");
+
+                    if (scrollStatus === "stop") {
+                        html.setAttribute("data-scroll-status", "move");
+                        return;
+                    }
+                    html.setAttribute("data-scroll-status", "stop");
+                }
+                function activeModalLightbox() {
+                    modalLightbox?.classList.remove("opacity-0", "invisible");
+                }
+
+                function disableModalLightbox() {
+                    modalLightbox?.classList.add("opacity-0", "invisible");
+                    document.querySelector(".modal-image-large")?.remove();
+                    document.querySelector(".modal-image-thumb")?.remove();
+                }
+
+                function createThumbImage(target: HTMLImageElement) {
+                    const lowImageUrl = target.getAttribute("data-thumb-img");
+                    const largeImageUrl = target.getAttribute("data-large-img");
+
+                    const cloneTarget = document.createElement("img");
+                    cloneTarget.src = `${lowImageUrl}`;
+
+                    cloneTarget.classList.add("modal-image-thumb");
+
+                    cloneTarget.setAttribute(
+                        "data-large-img",
+                        `${largeImageUrl}`,
+                    );
+                    cloneTarget.setAttribute(
+                        "data-thumb-img",
+                        `${lowImageUrl}`,
+                    );
+
+                    document.body.appendChild(cloneTarget);
+
+                    return cloneTarget;
+                }
+
+                async function loadFullImage(currentTarget: HTMLImageElement) {
+                    const modalLoader = document.querySelector(".loader");
+
+                    const largeImageUrl =
+                        currentTarget.getAttribute("data-large-img");
+
+                    currentTarget.style.filter = "saturate(0)";
+
+                    const largetImageElement = document.createElement("img");
+                    largetImageElement.src = `${largeImageUrl}`;
+                    largetImageElement.classList.add("modal-image-large");
+
+                    document.body.appendChild(largetImageElement);
+                    // loading
+                    modalLoader?.setAttribute("data-play", "true");
+
+                    const isLoaded = await isImageLoaded(largetImageElement);
+
+                    if (isLoaded) {
+                        modalLoader?.removeAttribute("data-play");
+                        currentTarget.remove();
+                    }
+
+                    if (!isLoaded) {
+                        currentTarget.style.filter = "saturate(1)";
+                        modalLoader?.removeAttribute("data-play");
+                    }
+                }
+
+                function isImageLoaded(target: HTMLImageElement) {
+                    return new Promise((res, rej) => {
+                        target.onload = () => res(true);
+                        target.onerror = () => res(false);
+                    });
+                }
+
+                // function translateImage(
+                //     cloneTarget: HTMLImageElement,
+                //     prevCoordinates: {
+                //         width: number;
+                //         height: number;
+                //         x: number;
+                //         y: number;
+                //     },
+                // ) {
+                //     const { width, height, x, y } = prevCoordinates;
+
+                //     cloneTarget.style.position = `absolute`;
+                //     cloneTarget.style.zIndex = 500;
+                //     cloneTarget.style.width = `${width}px`;
+                //     cloneTarget.style.height = `${height}px`;
+                //     cloneTarget.style.left = `${x}px`;
+                //     cloneTarget.style.top = `${y}px`;
+
+                //     document.startViewTransition(() => {
+                //         cloneTarget.style.width = `70%`;
+                //         cloneTarget.style.height = `auto`;
+                //         cloneTarget.style.left = `50%`;
+                //         cloneTarget.style.top = `50%`;
+                //         cloneTarget.style.transform = `translate(-50%, -50%)`;
+                //     });
+                // }
+            });
+        </script>
+    </body>
 </html>

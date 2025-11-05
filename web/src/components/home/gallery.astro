@@ -1,46 +1,59 @@
 ---
-import type { Wallpaper as WallpaperType } from "src/types";
 import Grid from "@components/ui/grid.astro";
 import Wallpaper from "@components/ui/wallpaper.astro";
 import Arrow from "@components/icons/arrow.astro";
+import type { Category } from "src/types";
+import { getWallpapers } from "@services/get-wallpapers";
 
 interface Props {
-  wallpaper: WallpaperType;
+    category: Category;
 }
 const IMAGES_FOR_PREVIEW = 10;
 
 const {
-  wallpaper: { category, data },
+    category: { name: categoryName },
 } = Astro.props;
-
-const totalResults = data.length;
+const wallpapers = getWallpapers({ category: categoryName, limit: 10 }).then(
+    (data) => data,
+);
+const totalResults = wallpapers.then((data) => data.length);
 ---
 
 <section>
-  <header
-    class="sticky top-16 left-0 p-2 bg-bg/95 dark:bg-bg-dark/95 justify-between md:backdrop-blur-md flex items-center z-10 text-sm md:text-base"
-  >
-    <h2
-      class="font-bold text-xl md:text-2xl capitalize text-primary-dark dark:text-primary"
+    <header
+        class="left-0 p-2 bg-bg/95 dark:bg-bg-dark/95 justify-between flex items-center z-10 text-sm md:text-base"
     >
-      {category}
-    </h2>
-    {
-      totalResults > IMAGES_FOR_PREVIEW && (
-        <a
-          href={`/wallpapers/${category}`}
-          class="flex duration-300  text-color-text dark:text-color-text-dark dark:hover:text-primary hover:text-primary-dark  text-base font-semibold  md:text-xl items-center justify-center gap-1 group"
+        <h2
+            class="font-bold text-xl md:text-2xl capitalize text-primary-dark dark:text-primary"
         >
-          show more
-          <Arrow class="size-4" />
-        </a>
-      )
-    }
-  </header>
+            {categoryName}
+        </h2>
+        {
+            totalResults.then((data) => {
+                if (Number(data) === IMAGES_FOR_PREVIEW) {
+                    return (
+                        <a
+                            href={`/wallpapers/${categoryName}`}
+                            class="flex duration-300  text-color-text dark:text-color-text-dark dark:hover:text-primary hover:text-primary-dark  text-base font-semibold  md:text-xl items-center justify-center gap-1 group"
+                        >
+                            show all
+                            <Arrow class="size-4" />
+                        </a>
+                    );
+                }
+            })
+        }
+    </header>
 
-  <div id="#my-gallery">
-    <Grid class="px-2">
-      {data.slice(0, IMAGES_FOR_PREVIEW).map((item) => <Wallpaper {...item} />)}
-    </Grid>
-  </div>
+    <div class="my-gallery" id="#my-gallery">
+        <Grid class="px-2">
+            {
+                wallpapers.then((data) => {
+                    return data.map((item) => {
+                        return <Wallpaper {...item} />;
+                    });
+                })
+            }
+        </Grid>
+    </div>
 </section>

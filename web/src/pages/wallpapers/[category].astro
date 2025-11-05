@@ -1,32 +1,131 @@
 ---
-import { getCategories } from "@services/get-categories";
-import { getWallpapers } from "@services/get-wallpapers";
+import { getSubWallpaper } from "@services/get-sub-wallpapers";
+import {getWallpapers} from "@services/get-wallpapers"
+
 import Grid from "@components/ui/grid.astro";
 import Layout from "../../layouts/Layout.astro";
-import type { GetStaticPaths } from "astro";
 import Wallpaper from "@components/ui/wallpaper.astro";
-
-export const getStaticPaths = (() => {
-  const categories = getCategories();
-  return categories.map(({ name }) => ({ params: { category: name } }));
-}) satisfies GetStaticPaths;
 
 const { category } = Astro.params;
 
-const info = getWallpapers({
-  category: `${category}`,
-});
+const wallpapers = getWallpapers({ category: `${category}` }).then(data => data)
+
 ---
 
-<Layout title={`wallpapers - ${category}`}>
-  <main class="h-full min-h-dvh px-2">
-    <h2
-      class="text-color-text py-3 md:py-4 text-xl md:text-2xl sticky top-16 bg-bg/95 dark:bg-bg-dark/95 z-30 capitalize md:backdrop-blur-md text-center dark:text-color-text-dark"
-    >
-      Wallpapers <span class="font-bold">{category}</span>
-    </h2>
-    <Grid>
-      {info?.data.map((item) => <Wallpaper {...item} />)}
-    </Grid>
-  </main>
+<Layout
+    title={`wallpapers - ${category}`}
+    description={`Download the best HD and Ultra HD Wallpapers Gruvbox - ${category} style. Use them as wallpapers for your desktop screens.`}
+>
+    <main class="h-full min-h-dvh px-2">
+            {
+                wallpapers.then((data) => {
+                    return (
+                    <div class="hero" >
+                        <h2> {category}</h2>
+                        <img  src={data[0].thumb} alt="">
+                        <img  src={data[1].thumb} alt="">
+                        <img  src={data[2].thumb} alt="">
+                    </div>
+
+
+                    <Grid>
+                        {data.map(async(item) => {
+                        const {
+                            hasLightMode: { status, allImagesApiUrl },
+                        } = item;
+                        if (Boolean(status)) {
+                            const wallpaper = await getSubWallpaper({apiUrl: `${allImagesApiUrl}`, currentCategory: `${category}`})
+
+
+                            return(
+                            <>
+                                {wallpaper.map((i) => {
+                                    return <Wallpaper {...i}/>;
+                                })}
+                            </>
+
+                            )
+                        }
+                        return <Wallpaper {...item} />})
+                        }
+                    </Grid>
+                    )
+                }).catch(e => {
+                return <script>
+                  window.location.href = '/404-not-found'
+                </script>
+                })
+            }
+    </main>
 </Layout>
+
+<style scoped>
+    .hero {
+        width: 100%;
+        @apply h-16 mt-16 md:mt-0 md:h-[250px] rounded-md;
+
+        margin-bottom: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background:
+            linear-gradient(to bottom, theme("colors.bg-dark"), transparent),
+            linear-gradient(to top, theme("colors.bg-dark"), transparent),
+            linear-gradient(to top, theme("colors.bg-dark"), transparent);
+        backdrop-filter: blur(15px);
+        z-index: 10;
+        @apply flex items-center justify-center text-7xl text-primary uppercase;
+    }
+
+    .dark .hero{
+        display: none !important;
+    }
+
+    .hero h2 {
+        @apply w-full text-center text-4xl md:text-8xl text-primary uppercase;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 20;
+        mask-image: linear-gradient(to bottom, #000, transparent);
+
+        font-weight: bold; /* Optional: for better visibility */
+
+        /* Apply the linear gradient as a background */
+        background:
+            linear-gradient(
+                to bottom,
+                theme("colors.primary") 10%,
+                transparent
+            ),
+            /* Example colors */
+                linear-gradient(
+                    to bottom,
+                    theme("colors.primary") 10%,
+                    transparent
+                ); /* Example colors */
+
+        /* Clip the background to the text shape */
+        -webkit-background-clip: text; /* For Webkit browsers (Chrome, Safari) */
+        background-clip: text;
+
+        /* Make the text transparent so the background shows through */
+        color: transparent;
+    }
+    .hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>

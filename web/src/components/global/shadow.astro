@@ -9,7 +9,7 @@ const props = Astro.props;
 
 <div
   class={twMerge(
-    "fixed w-full z-[10] bottom-0 left-0 h-28 pointer-events-none opacity-100",
+    "fixed w-full z-[10] bottom-0 left-0 h-16 pointer-events-none opacity-100",
     props.class,
   )}
 >
@@ -17,22 +17,10 @@ const props = Astro.props;
 
 <style>
   html.dark div {
-    background-image: linear-gradient(
-      to top,
-      var(--bg-dark),
-      30%,
-      transparent,
-      rgba(0, 0, 255, 0)
-    );
+    background-image: linear-gradient(transparent, theme("colors.bg-dark"));
   }
 
   div {
-    background-image: linear-gradient(
-      to top,
-      var(--bg),
-      30%,
-      transparent,
-      rgba(0, 0, 255, 0)
-    );
+    background: linear-gradient(transparent, transparent);
   }
 </style>
