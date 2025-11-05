@@ -22,14 +22,14 @@ const wallpapers = getWallpapers({ category: `${category}` }).then(data => data)
                     return (
                     <div class="hero" >
                         <h2> {category}</h2>
-                        <img  src={data[0].thumb} alt="">
-                        <img  src={data[1].thumb} alt="">
-                        <img  src={data[2].thumb} alt="">
+                        <img  src={data?.[0].thumb} alt="">
+                        <img  src={data?.[1].thumb} alt="">
+                        <img  src={data?.[2].thumb} alt="">
                     </div>
 
 
                     <Grid>
-                        {data.map(async(item) => {
+                        {data?.map(async(item) => {
                         const {
                             hasLightMode: { status, allImagesApiUrl },
                         } = item;
@@ -39,7 +39,7 @@ const wallpapers = getWallpapers({ category: `${category}` }).then(data => data)
 
                             return(
                             <>
-                                {wallpaper.map((i) => {
+                                {wallpaper?.map((i) => {
                                     return <Wallpaper {...i}/>;
                                 })}
                             </>

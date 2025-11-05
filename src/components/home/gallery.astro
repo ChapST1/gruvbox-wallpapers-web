@@ -49,7 +49,7 @@ const totalResults = wallpapers.then((data) => data.length);
         <Grid class="px-2">
             {
                 wallpapers.then((data) => {
-                    return data.map((item) => {
+                    return data?.map((item) => {
                         return <Wallpaper {...item} />;
                     });
                 })
