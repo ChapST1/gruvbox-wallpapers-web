@@ -16,7 +16,7 @@ const {
 const wallpapers = getWallpapers({ category: categoryName, limit: 10 }).then(
     (data) => data,
 );
-const totalResults = wallpapers.then((data) => data.length);
+const totalResults = wallpapers.then((data) => data?.length);
 ---
 
 <section>
